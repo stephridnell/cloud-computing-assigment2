@@ -136,7 +136,7 @@ const addUsers = async () => {
   for (let i = 0; i < 10; i++) {
     insertPromises.push(
       insertItem("login", {
-        user_id: { S: "id" + i },
+        user_id: { S: "id" + i }, // using incremental ids here so i can run the seed as many times as i want without duplicating data
         email: { S: `s3272974${i}@student.rmit.edu.au` },
         user_name: { S: `Stephanie Ridnell${i}` },
         password: { S: generateUserPassword(i) },
@@ -180,7 +180,7 @@ const addMusic = async () => {
     )?.[0];
     await uploadFromUrl(imageName ?? "song" + i, song.img_url);
     return insertItem("music", {
-      music_id: { S: "song" + i },
+      music_id: { S: "song" + i }, // using incremental ids here so i can run the seed as many times as i want without duplicating data
       title: { S: song.title },
       artist: { S: song.artist },
       year: { S: song.year },
