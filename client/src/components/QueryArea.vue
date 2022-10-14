@@ -15,18 +15,30 @@
           <n-button type="primary" @click="handleQuery"> Query </n-button>
         </n-form-item>
       </n-form>
-      <pre>
-        {{ filteredMusic }}
-      </pre>
+      <div v-if="filteredMusic.length === 0">
+        No result is retrieved. Please query again.
+      </div>
+      <div v-else>
+        <n-grid
+          x-gap="12"
+          y-gap="12"
+          cols="1 400:2 600:3 1000:4 1500:5 1750:6 2000:7"
+        >
+          <n-gi v-for="song in filteredMusic" :key="song.song_id">
+            <song-card :song="song" />
+          </n-gi>
+        </n-grid>
+      </div>
     </n-space>
   </div>
 </template>
 
 <script lang="ts">
 import { defineComponent, ref } from 'vue'
-import { NSpace, NFormItem, NForm, NInput, NButton } from 'naive-ui'
+import { NSpace, NFormItem, NForm, NInput, NButton, NGrid, NGi } from 'naive-ui'
 import http from '../http'
 import { Song } from '../types'
+import SongCard from './SongCard.vue'
 
 interface MusicResponse {
   music: Song[]
@@ -49,7 +61,10 @@ export default defineComponent({
     NFormItem,
     NForm,
     NInput,
-    NButton
+    NButton,
+    SongCard,
+    NGrid,
+    NGi
   },
   setup: () => {
     const queryRef = ref<QueryType>({
