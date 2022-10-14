@@ -8,7 +8,7 @@ import cors from "cors";
 import Multer from "multer";
 import { v4 as uuidv4 } from "uuid";
 import { seedTables } from "./seed";
-import { getLoginUser } from "./db";
+import { getLoginUser, insertItem } from "./db";
 
 const multer = Multer({
   storage: Multer.memoryStorage(),
@@ -41,32 +41,32 @@ app.get("/seed-db", async (req: Request, res: Response) => {
   }
 });
 
-app.post(
-  "/register",
-  multer.single("userImage"),
-  async (req: Request, res: Response) => {
-    const { email, userName, password } = req.body;
+app.post("/register", async (req: Request, res: Response) => {
+  const { email, username, password } = req.body;
 
-    if (!email || !password || !userName) {
-      return res.status(400).json({ msg: "Missing required field" });
-    }
-
-    // check if ID already exists in DB
-    const userByEmail = {};
-    if (userByEmail) {
-      return res.status(400).json({ msg: "The email already exists" });
-    }
-    // all good, store new user in firestore
-    try {
-      // store the user
-    } catch (err) {
-      console.log(err);
-      return res.status(500).json({ msg: "Unexpected error occurred" });
-    }
-
-    return res.status(200).json({ email, password });
+  if (!email || !password || !username) {
+    return res.status(400).json({ msg: "Missing required field" });
   }
-);
+
+  // check if email already exists in DB
+  const userByEmail = await getLoginUser(email);
+  if (userByEmail) {
+    return res.status(400).json({ msg: "The email already exists" });
+  }
+  // all good, store new user in firestore
+  try {
+    insertItem("login", {
+      email: { S: email },
+      user_name: { S: username },
+      password: { S: password },
+    });
+  } catch (err) {
+    console.log(err);
+    return res.status(500).json({ msg: "Unexpected error occurred" });
+  }
+
+  return res.status(200).json();
+});
 
 app.post("/auth/login", async (req: Request, res: Response) => {
   const { email, password } = req.body;

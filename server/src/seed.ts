@@ -8,6 +8,7 @@ import { s3Client } from "./s3";
 import musicData from "../a2.json";
 import axios from "axios";
 import { PutObjectCommand } from "@aws-sdk/client-s3";
+import { insertItem } from "./db";
 
 const BUCKET_URL =
   "https://steph-cc-assignment-2.s3.ap-southeast-2.amazonaws.com/";
@@ -160,16 +161,6 @@ const generateUserPassword = (startingNumber: number) => {
     startingNumber++;
   }
   return password;
-};
-
-const insertItem = async (tableName: string, item: any) => {
-  const params = {
-    TableName: tableName,
-    Item: item,
-  };
-
-  const command = new PutItemCommand(params);
-  await ddbClient.send(command);
 };
 
 const addMusic = async () => {

@@ -1,9 +1,9 @@
 <template>
   <n-card title="Register">
     <n-form ref="formRef" :model="model" :rules="rules">
-      <n-form-item path="id" label="ID">
+      <n-form-item path="email" label="Email">
         <n-input
-          v-model:value="model.id"
+          v-model:value="model.email"
           @keydown.enter.prevent
           placeholder=""
         />
@@ -23,16 +23,6 @@
           placeholder=""
         />
       </n-form-item>
-      <n-form-item path="userImage" label="User image">
-        <n-upload
-          ref="upload"
-          :default-upload="false"
-          :max="1"
-          @change="handleChange"
-        >
-          <n-button>Select File</n-button>
-        </n-upload>
-      </n-form-item>
 
       <n-row :gutter="[0, 24]">
         <n-col :span="24">
@@ -43,7 +33,11 @@
               align-items: center;
             "
           >
-            <n-button :loading="loading" type="primary" @click="handleValidateButtonClick">
+            <n-button
+              :loading="loading"
+              type="primary"
+              @click="handleValidateButtonClick"
+            >
               Register
             </n-button>
             <router-link to="/login">Login</router-link>
@@ -65,19 +59,16 @@ import {
   NRow,
   NCol,
   NCard,
-  NUpload,
   NButton,
   useMessage
 } from 'naive-ui'
-import type { UploadInst, UploadFileInfo } from 'naive-ui'
 import http from '../http'
 import router from '../router'
 
 interface ModelType {
-  id: string
+  email: string
   username: string
   password: string
-  userImage: File | null
 }
 
 export default defineComponent({
@@ -89,25 +80,22 @@ export default defineComponent({
     NRow,
     NCol,
     NButton,
-    NCard,
-    NUpload
+    NCard
   },
   setup: () => {
     const formRef = ref<FormInst | null>(null)
     const message = useMessage()
-    const uploadRef = ref<UploadInst | null>(null)
     const loadingRef = ref(false)
     const modelRef = ref<ModelType>({
-      id: '',
+      email: '',
       username: '',
-      password: '',
-      userImage: null
+      password: ''
     })
     const rules: FormRules = {
-      id: [
+      email: [
         {
           required: true,
-          message: 'ID is required'
+          message: 'Email is required'
         }
       ],
       username: [
@@ -128,33 +116,21 @@ export default defineComponent({
       model: modelRef,
       loading: loadingRef,
       rules,
-      upload: uploadRef,
-      handleChange: (data: { file: UploadFileInfo }) => {
-        modelRef.value.userImage = data.file.file as File
-      },
       handleValidateButtonClick: async (e: MouseEvent) => {
         e.preventDefault()
         loadingRef.value = true
         try {
           await formRef.value?.validate()
-          const formData = new FormData()
-          formData.append('id', modelRef.value.id)
-          formData.append('username', modelRef.value.username)
-          formData.append('password', modelRef.value.password)
-          if (modelRef.value.userImage) {
-            formData.append('userImage', modelRef.value.userImage)
-          }
+          await http.post('/register', modelRef.value)
 
-          await http.post('/register', formData)
           message.success('Registration successful, please login to continue')
           router.push('/login')
         } catch (err: any) {
           if (err.msg) {
-            message.error(err.msg,
-              {
-                closable: true,
-                duration: 5000
-              })
+            message.error(err.msg, {
+              closable: true,
+              duration: 5000
+            })
           }
         } finally {
           loadingRef.value = false

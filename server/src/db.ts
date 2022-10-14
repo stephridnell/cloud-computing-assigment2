@@ -1,4 +1,4 @@
-import { QueryCommand } from "@aws-sdk/client-dynamodb";
+import { PutItemCommand, QueryCommand } from "@aws-sdk/client-dynamodb";
 import { ddbClient } from "./ddb";
 
 export interface User {
@@ -6,6 +6,17 @@ export interface User {
   email: string;
   user_name: string;
 }
+
+export const insertItem = async (tableName: string, item: any) => {
+  const params = {
+    TableName: tableName,
+    Item: item,
+  };
+
+  const command = new PutItemCommand(params);
+  await ddbClient.send(command);
+};
+
 export const getLoginUser = async (
   email: string
 ): Promise<User | undefined> => {
