@@ -12,7 +12,7 @@ import NewPost from '../components/NewPost.vue'
 import LatestPosts from '../components/LatestPosts.vue'
 
 export default defineComponent({
-  name: 'ForumView',
+  name: 'MainView',
   components: {
     NLayoutContent,
     NewPost,

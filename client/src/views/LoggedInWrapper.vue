@@ -29,20 +29,18 @@ import {
   NIcon
 } from 'naive-ui'
 import { useStore } from 'vuex'
-import { Logout as LogoutIcon, ListDetails as ForumIcon } from '@vicons/tabler'
+import { Logout as LogoutIcon } from '@vicons/tabler'
 import router from '../router'
 
 export default defineComponent({
   name: 'LoggedInWrapper',
   components: {
     NLayout,
-    NAvatar,
     NLayoutHeader,
     NButton,
     NSpace,
     NIcon,
-    LogoutIcon,
-    ForumIcon
+    LogoutIcon
   },
   setup: () => {
     const store = useStore()

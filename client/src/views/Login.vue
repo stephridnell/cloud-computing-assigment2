@@ -124,7 +124,7 @@ export default defineComponent({
             modelRef.value
           )) as LoginResponse
           store.commit('setCurrentUser', data.user)
-          router.push('/forum')
+          router.push('/main')
         } catch (err: any) {
           if (err.msg) {
             message.error(err.msg, {
