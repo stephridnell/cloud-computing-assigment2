@@ -4,11 +4,11 @@ import { createRouter, createWebHistory, RouteRecordRaw } from 'vue-router'
 const routes: Array<RouteRecordRaw> = [
   {
     path: '/',
-    redirect: '/forum'
+    redirect: '/main'
   },
   {
     path: '/',
-    redirect: '/forum',
+    redirect: '/main',
     component: () =>
       import(
         /* webpackChunkName: "loggedInWrapper" */ '../views/LoggedInWrapper.vue'
@@ -17,18 +17,10 @@ const routes: Array<RouteRecordRaw> = [
       {
         // UserProfile will be rendered inside User's <router-view>
         // when /user/:id/profile is matched
-        path: 'forum',
-        name: 'forum',
+        path: 'main',
+        name: 'main',
         component: () =>
-          import(/* webpackChunkName: "forum" */ '../views/Forum.vue')
-      },
-      {
-        // UserPosts will be rendered inside User's <router-view>
-        // when /user/:id/posts is matched
-        path: 'user',
-        name: 'user',
-        component: () =>
-          import(/* webpackChunkName: "user" */ '../views/User.vue')
+          import(/* webpackChunkName: "main" */ '../views/Main.vue')
       }
     ]
   },
