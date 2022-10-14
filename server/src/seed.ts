@@ -15,21 +15,21 @@ const BUCKET_URL =
 export const loginTableParams: CreateTableCommandInput = {
   AttributeDefinitions: [
     {
-      AttributeName: "user_id",
+      AttributeName: "email",
       AttributeType: "S",
     },
     {
-      AttributeName: "email",
+      AttributeName: "user_name",
       AttributeType: "S",
     },
   ],
   KeySchema: [
     {
-      AttributeName: "user_id", // hash key
+      AttributeName: "email", // hash key
       KeyType: "HASH",
     },
     {
-      AttributeName: "email", // sort key
+      AttributeName: "user_name", // sort key
       KeyType: "RANGE",
     },
   ],
@@ -136,7 +136,6 @@ const addUsers = async () => {
   for (let i = 0; i < 10; i++) {
     insertPromises.push(
       insertItem("login", {
-        user_id: { S: "id" + i }, // using incremental ids here so i can run the seed as many times as i want without duplicating data
         email: { S: `s3272974${i}@student.rmit.edu.au` },
         user_name: { S: `Stephanie Ridnell${i}` },
         password: { S: generateUserPassword(i) },

@@ -9,21 +9,26 @@ const routes: Array<RouteRecordRaw> = [
   {
     path: '/',
     redirect: '/forum',
-    component: () => import(/* webpackChunkName: "loggedInWrapper" */ '../views/LoggedInWrapper.vue'),
+    component: () =>
+      import(
+        /* webpackChunkName: "loggedInWrapper" */ '../views/LoggedInWrapper.vue'
+      ),
     children: [
       {
         // UserProfile will be rendered inside User's <router-view>
         // when /user/:id/profile is matched
         path: 'forum',
         name: 'forum',
-        component: () => import(/* webpackChunkName: "forum" */ '../views/Forum.vue')
+        component: () =>
+          import(/* webpackChunkName: "forum" */ '../views/Forum.vue')
       },
       {
         // UserPosts will be rendered inside User's <router-view>
         // when /user/:id/posts is matched
         path: 'user',
         name: 'user',
-        component: () => import(/* webpackChunkName: "user" */ '../views/User.vue')
+        component: () =>
+          import(/* webpackChunkName: "user" */ '../views/User.vue')
       }
     ]
   },
@@ -64,7 +69,7 @@ router.beforeEach((to) => {
     store.commit('setCurrentUser', user)
   }
 
-  if (authRequired && !store.getters.currentUser?.id) {
+  if (authRequired && !store.getters.currentUser?.email) {
     return '/login'
   }
 })

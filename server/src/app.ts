@@ -8,6 +8,7 @@ import cors from "cors";
 import Multer from "multer";
 import { v4 as uuidv4 } from "uuid";
 import { seedTables } from "./seed";
+import { getLoginUser } from "./db";
 
 const multer = Multer({
   storage: Multer.memoryStorage(),
@@ -73,9 +74,9 @@ app.post("/auth/login", async (req: Request, res: Response) => {
     return res.status(400).json({ msg: "Email or password is invalid" });
   }
 
-  // check if username already exists in DB
-  const userByEmail = {};
-  if (!userByEmail) {
+  // check if user is in db
+  const userByEmail = await getLoginUser(email);
+  if (!userByEmail || userByEmail.password !== password) {
     return res.status(400).json({ msg: "ID or password is invalid" });
   }
 

@@ -1,9 +1,10 @@
 <template>
   <n-card title="Login">
     <n-form ref="formRef" :model="model" :rules="rules">
-      <n-form-item path="id" label="ID">
+      <n-form-item path="email" label="Email">
         <n-input
-          v-model:value="model.id"
+          type="email"
+          v-model:value="model.email"
           @keydown.enter.prevent
           placeholder=""
         />
@@ -25,7 +26,11 @@
               align-items: center;
             "
           >
-            <n-button :loading="loading" type="primary" @click="handleValidateButtonClick">
+            <n-button
+              :loading="loading"
+              type="primary"
+              @click="handleValidateButtonClick"
+            >
               Login
             </n-button>
             <router-link to="/register">Register</router-link>
@@ -56,17 +61,15 @@ import router from '../router'
 import { useStore } from 'vuex'
 
 interface ModelType {
-  id: string
+  email: string
   password: string
 }
 
 interface LoginResponse {
   user: {
-    id: string
+    email: string
     // eslint-disable-next-line camelcase
     user_name: string
-    // eslint-disable-next-line camelcase
-    user_image: string
   }
 }
 
@@ -88,14 +91,14 @@ export default defineComponent({
     const loadingRef = ref(false)
     const rPasswordFormItemRef = ref<FormItemInst | null>(null)
     const modelRef = ref<ModelType>({
-      id: '',
+      email: '',
       password: ''
     })
     const rules: FormRules = {
-      id: [
+      email: [
         {
           required: true,
-          message: 'ID is required'
+          message: 'Email is required'
         }
       ],
       password: [
@@ -116,16 +119,18 @@ export default defineComponent({
         loadingRef.value = true
         try {
           await formRef.value?.validate()
-          const data = await http.post('/auth/login', modelRef.value) as LoginResponse
+          const data = (await http.post(
+            '/auth/login',
+            modelRef.value
+          )) as LoginResponse
           store.commit('setCurrentUser', data.user)
           router.push('/forum')
         } catch (err: any) {
           if (err.msg) {
-            message.error(err.msg,
-              {
-                closable: true,
-                duration: 5000
-              })
+            message.error(err.msg, {
+              closable: true,
+              duration: 5000
+            })
           }
         } finally {
           loadingRef.value = false
