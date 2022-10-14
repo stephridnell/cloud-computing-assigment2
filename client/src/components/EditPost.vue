@@ -27,8 +27,17 @@
       </n-upload>
     </n-form-item>
     <n-space>
-      <n-button strong secondary :loading="loading" type="primary" @click="handleValidateButtonClick">Save</n-button>
-      <n-button strong secondary type="tertiary" @click="$emit('cancel')">Cancel</n-button>
+      <n-button
+        strong
+        secondary
+        :loading="loading"
+        type="primary"
+        @click="handleValidateButtonClick"
+        >Save</n-button
+      >
+      <n-button strong secondary type="tertiary" @click="$emit('cancel')"
+        >Cancel</n-button
+      >
     </n-space>
   </n-form>
 </template>
@@ -128,15 +137,14 @@ export default defineComponent({
           }
           await http.put(`/update/${props.post.id}`, formData)
           message.success('Message updated')
-          router.push('/forum')
+          router.push('/main')
           window.scrollTo(0, 0)
         } catch (err: any) {
           if (err.msg) {
-            message.error(err.msg,
-              {
-                closable: true,
-                duration: 5000
-              })
+            message.error(err.msg, {
+              closable: true,
+              duration: 5000
+            })
           }
         } finally {
           loadingRef.value = false
