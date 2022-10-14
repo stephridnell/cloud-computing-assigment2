@@ -8,7 +8,7 @@ import cors from "cors";
 import Multer from "multer";
 import { v4 as uuidv4 } from "uuid";
 import { seedTables } from "./seed";
-import { getLoginUser, insertItem } from "./db";
+import { getAllMusic, getLoginUser, insertItem } from "./db";
 
 const multer = Multer({
   storage: Multer.memoryStorage(),
@@ -87,7 +87,8 @@ app.post("/auth/login", async (req: Request, res: Response) => {
 });
 
 app.get("/music", async (req, res) => {
-  return res.sendStatus(200);
+  const music = await getAllMusic();
+  return res.status(200).json({ music });
 });
 
 app.post("/:userId/:musicId/subscribe", async (req, res) => {

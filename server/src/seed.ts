@@ -72,7 +72,7 @@ export const musicTableParams: CreateTableCommandInput = {
 export const subTableParams: CreateTableCommandInput = {
   AttributeDefinitions: [
     {
-      AttributeName: "user_id",
+      AttributeName: "email",
       AttributeType: "S",
     },
     {
@@ -82,7 +82,7 @@ export const subTableParams: CreateTableCommandInput = {
   ],
   KeySchema: [
     {
-      AttributeName: "user_id", // hash key
+      AttributeName: "email", // hash key
       KeyType: "HASH",
     },
     {

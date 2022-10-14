@@ -8,8 +8,7 @@ interface State {
 
 const initialUser: User = {
   user_name: '',
-  user_image: '',
-  id: ''
+  email: ''
 }
 
 export default createStore({
@@ -17,23 +16,21 @@ export default createStore({
     user: initialUser
   },
   getters: {
-    currentUser (state: State): User {
+    currentUser(state: State): User {
       return state.user
     }
   },
   mutations: {
     // setting the whole user in localstorage as a very budget way of persisting login without using jwt
-    setCurrentUser (state: State, user: User) {
+    setCurrentUser(state: State, user: User) {
       window.localStorage.setItem('user', JSON.stringify(user))
       state.user = { ...user }
     },
-    logout (state: State) {
+    logout(state: State) {
       window.localStorage.removeItem('user')
       state.user = initialUser
     }
   },
-  actions: {
-  },
-  modules: {
-  }
+  actions: {},
+  modules: {}
 })
