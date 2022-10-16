@@ -25,7 +25,7 @@
           cols="1 400:2 600:3 1000:4 1500:5 1750:6 2000:7"
         >
           <n-gi v-for="song in filteredMusic" :key="song.song_id">
-            <song-card :song="song" />
+            <song-card :song="song" @subChanged="subChanged" />
           </n-gi>
         </n-grid>
       </div>
@@ -66,7 +66,7 @@ export default defineComponent({
     NGrid,
     NGi
   },
-  setup: () => {
+  setup: (_props, { emit }) => {
     const queryRef = ref<QueryType>({
       title: '',
       year: '',
@@ -74,11 +74,14 @@ export default defineComponent({
     })
 
     return {
+      subChanged () {
+        emit('subChanged')
+      },
       music: musicRef,
       filteredMusic: filteredMusicRef,
       loading: loadingRef,
       query: queryRef,
-      handleQuery(e: MouseEvent) {
+      handleQuery (e: MouseEvent) {
         e.preventDefault()
         const title = queryRef.value.title.trim().toLowerCase()
         const year = queryRef.value.year.trim().toLowerCase()

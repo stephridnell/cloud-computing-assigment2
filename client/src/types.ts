@@ -12,4 +12,5 @@ export interface Song {
   year: string
   img_url: string
   title: string
+  sub_id?: string
 }

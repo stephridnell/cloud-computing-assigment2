@@ -6,7 +6,18 @@
     <div>{{ song.artist }}</div>
     <div>{{ song.year }}</div>
     <div>
-      <n-button type="primary" @click="subscribe"> Subscribe </n-button>
+      <n-button
+        strong
+        secondary
+        type="warning"
+        @click="unsubscribe"
+        v-if="isSubscribedTo"
+      >
+        Unsubscribe
+      </n-button>
+      <n-button strong secondary type="success" @click="subscribe" v-else>
+        Subscribe
+      </n-button>
     </div>
   </n-card>
 </template>
@@ -31,16 +42,27 @@ export default defineComponent({
     NButton,
     NCard
   },
-  setup: (props) => {
+  setup: (props, { emit }) => {
     const store = useStore()
     const currentUser = computed(() => store.getters.currentUser)
+    const subscriptionId = computed(() =>
+      store.getters.subscriptionId(props.song.music_id)
+    )
 
     return {
       subscribe: async () => {
         await http.post(
           `/${currentUser.value.user_id}/${props.song.music_id}/subscribe`
         )
-      }
+        emit('subChanged')
+      },
+      unsubscribe: async () => {
+        await http.post(
+          `/${currentUser.value.user_id}/${subscriptionId.value}/unsubscribe`
+        )
+        emit('subChanged')
+      },
+      isSubscribedTo: !!subscriptionId.value
     }
   }
 })

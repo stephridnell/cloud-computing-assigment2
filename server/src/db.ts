@@ -24,6 +24,7 @@ export interface Song {
 }
 
 export interface Subscription {
+  sub_id: string;
   email: string;
   music_id: string;
 }
@@ -117,12 +118,13 @@ export const getUserSubscriptions = async (userId: string): Promise<Song[]> => {
 
   try {
     const subData = await ddbClient.send(new QueryCommand(params));
-    if (!subData.Items) {
+    const subs = subData.Items;
+    if (!subs || subs.length === 0) {
       return [];
     }
 
     const exprAttrVals: Record<string, AttributeValue> = {};
-    subData.Items.forEach((el, i) => {
+    subs.forEach((el, i) => {
       exprAttrVals[`:song${i}`] = { S: el.music_id.S ?? "" };
     });
 
@@ -143,6 +145,10 @@ export const getUserSubscriptions = async (userId: string): Promise<Song[]> => {
           year: song.year?.S ?? "",
           img_url: song.img_url?.S ?? "",
           title: song.title?.S ?? "",
+          sub_id:
+            subs.find((el) => {
+              return el.music_id.S === song.music_id?.S;
+            })?.sub_id.S ?? "",
         };
       }) ?? []
     );

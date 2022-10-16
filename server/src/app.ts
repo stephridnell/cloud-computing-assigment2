@@ -114,11 +114,12 @@ app.post("/:userId/:musicId/subscribe", async (req, res) => {
   return res.sendStatus(201);
 });
 
-app.post("/:subId/unsubscribe", async (req, res) => {
-  const { subId } = req.params;
+app.post("/:userId/:subId/unsubscribe", async (req, res) => {
+  const { subId, userId } = req.params;
   try {
-    deleteItem("subscriptions", {
+    await deleteItem("subscriptions", {
       sub_id: { S: subId },
+      user_id: { S: userId },
     });
   } catch (err) {
     console.log(err);

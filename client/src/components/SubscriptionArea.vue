@@ -9,7 +9,7 @@
           cols="1 400:2 600:3 1000:4 1500:5 1750:6 2000:7"
         >
           <n-gi v-for="song in music" :key="song.song_id">
-            <song-card :song="song" />
+            <song-card :song="song" @subChanged="fetchSubscriptions" />
           </n-gi>
         </n-grid>
       </div>
@@ -41,20 +41,24 @@ export default defineComponent({
     NGi
   },
   setup: () => {
+    const store = useStore()
+    const currentUser = computed(() => store.getters.currentUser)
     return {
       music: musicRef,
-      loading: loadingRef
+      loading: loadingRef,
+      fetchSubscriptions: async () => {
+        loadingRef.value = true
+        const data = (await http.get(
+          `/${currentUser.value.user_id}/subscriptions`
+        )) as MusicResponse
+        musicRef.value = data.music
+        store.commit('setSubscriptions', data.music)
+        loadingRef.value = false
+      }
     }
   },
   mounted: async function () {
-    const store = useStore()
-    const currentUser = computed(() => store.getters.currentUser)
-    loadingRef.value = true
-    const data = (await http.get(
-      `/${currentUser.value.user_id}/subscriptions`
-    )) as MusicResponse
-    musicRef.value = data.music
-    loadingRef.value = false
+    await this.fetchSubscriptions()
   }
 })
 </script>
