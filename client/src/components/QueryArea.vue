@@ -19,15 +19,20 @@
         No result is retrieved. Please query again.
       </div>
       <div v-else>
-        <n-grid
-          x-gap="12"
-          y-gap="12"
-          cols="1 400:2 600:3 1000:4 1500:5 1750:6 2000:7"
-        >
-          <n-gi v-for="song in filteredMusic" :key="song.song_id">
-            <song-card :song="song" @subChanged="subChanged" />
-          </n-gi>
-        </n-grid>
+        <n-table :single-line="false">
+          <thead>
+            <tr>
+              <th></th>
+              <th>Title</th>
+              <th>Artist</th>
+              <th>Year</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody>
+            <song-row v-for="song in filteredMusic" :key="song.music_id" @subChanged="subChanged" :song="song" />
+          </tbody>
+        </n-table>
       </div>
     </n-space>
   </div>
@@ -35,10 +40,10 @@
 
 <script lang="ts">
 import { defineComponent, ref } from 'vue'
-import { NSpace, NFormItem, NForm, NInput, NButton, NGrid, NGi } from 'naive-ui'
+import { NSpace, NFormItem, NForm, NInput, NButton, NTable } from 'naive-ui'
 import http from '../http'
 import { Song } from '../types'
-import SongCard from './SongCard.vue'
+import SongRow from './SongRow.vue'
 
 interface MusicResponse {
   music: Song[]
@@ -62,9 +67,8 @@ export default defineComponent({
     NForm,
     NInput,
     NButton,
-    SongCard,
-    NGrid,
-    NGi
+    SongRow,
+    NTable
   },
   setup: (_props, { emit }) => {
     const queryRef = ref<QueryType>({

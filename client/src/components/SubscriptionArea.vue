@@ -1,12 +1,13 @@
 <template>
   <div>
+    <n-card title="Your subscriptions">
     <n-space vertical>
       <div v-if="music.length === 0">No subscriptions.</div>
       <div v-else>
         <n-grid
           x-gap="12"
           y-gap="12"
-          cols="1 400:2 600:3 1000:4 1500:5 1750:6 2000:7"
+          cols="1 400:2 600:3 800:4 1000:5 1250:6 1500:7"
         >
           <n-gi v-for="song in music" :key="song.song_id">
             <song-card :song="song" @subChanged="fetchSubscriptions" />
@@ -14,12 +15,13 @@
         </n-grid>
       </div>
     </n-space>
+    </n-card>
   </div>
 </template>
 
 <script lang="ts">
 import { computed, defineComponent, ref } from 'vue'
-import { NSpace, NGrid, NGi } from 'naive-ui'
+import { NSpace, NGrid, NGi, NCard } from 'naive-ui'
 import http from '../http'
 import { Song } from '../types'
 import SongCard from './SongCard.vue'
@@ -38,7 +40,8 @@ export default defineComponent({
     NSpace,
     SongCard,
     NGrid,
-    NGi
+    NGi,
+    NCard
   },
   setup: () => {
     const store = useStore()
