@@ -8,7 +8,13 @@ import cors from "cors";
 import Multer from "multer";
 import { v4 as uuidv4 } from "uuid";
 import { seedTables } from "./seed";
-import { getAllMusic, getLoginUser, insertItem } from "./db";
+import {
+  deleteItem,
+  getAllMusic,
+  getLoginUser,
+  getUserSubscriptions,
+  insertItem,
+} from "./db";
 
 const multer = Multer({
   storage: Multer.memoryStorage(),
@@ -55,7 +61,8 @@ app.post("/register", async (req: Request, res: Response) => {
   }
   // all good, store new user in firestore
   try {
-    insertItem("login", {
+    await insertItem("login", {
+      user_id: { S: uuidv4() },
       email: { S: email },
       user_name: { S: username },
       password: { S: password },
@@ -65,7 +72,7 @@ app.post("/register", async (req: Request, res: Response) => {
     return res.status(500).json({ msg: "Unexpected error occurred" });
   }
 
-  return res.status(200).json();
+  return res.status(201).json();
 });
 
 app.post("/auth/login", async (req: Request, res: Response) => {
@@ -92,16 +99,38 @@ app.get("/music", async (req, res) => {
 });
 
 app.post("/:userId/:musicId/subscribe", async (req, res) => {
-  return res.sendStatus(200);
+  const { userId, musicId } = req.params;
+  try {
+    await insertItem("subscriptions", {
+      sub_id: { S: uuidv4() },
+      user_id: { S: userId },
+      music_id: { S: musicId },
+    });
+  } catch (err) {
+    console.log(err);
+    return res.status(500).json({ msg: "Unexpected error occurred" });
+  }
+
+  return res.sendStatus(201);
 });
 
-app.post("/:userId/:musicId/unsubscribe", async (req, res) => {
-  return res.sendStatus(200);
+app.post("/:subId/unsubscribe", async (req, res) => {
+  const { subId } = req.params;
+  try {
+    deleteItem("subscriptions", {
+      sub_id: { S: subId },
+    });
+  } catch (err) {
+    console.log(err);
+    return res.status(500).json({ msg: "Unexpected error occurred" });
+  }
+
+  return res.sendStatus(204);
 });
 
 app.get("/:userId/subscriptions", async (req: Request, res: Response) => {
   try {
-    const music = ["hi"];
+    const music = await getUserSubscriptions(req.params.userId);
     return res.status(200).json({ music });
   } catch (err) {
     console.log(err);

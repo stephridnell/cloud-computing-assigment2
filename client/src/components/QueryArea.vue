@@ -1,6 +1,6 @@
 <template>
   <div>
-    <n-space vertical>
+    <n-space vertical v-show="!loading">
       <n-form ref="formRef" inline :label-width="80" :model="query">
         <n-form-item label="Title" path="title">
           <n-input v-model:value="query.title" />
@@ -108,15 +108,3 @@ export default defineComponent({
   }
 })
 </script>
-
-<style lang="scss">
-img {
-  max-width: 100%;
-}
-.post-user {
-  font-size: 16px;
-}
-.post-date {
-  font-size: 12px;
-}
-</style>

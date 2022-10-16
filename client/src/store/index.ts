@@ -7,6 +7,7 @@ interface State {
 }
 
 const initialUser: User = {
+  user_id: '',
   user_name: '',
   email: ''
 }

@@ -16,21 +16,21 @@ const BUCKET_URL =
 export const loginTableParams: CreateTableCommandInput = {
   AttributeDefinitions: [
     {
-      AttributeName: "email",
+      AttributeName: "user_id",
       AttributeType: "S",
     },
     {
-      AttributeName: "user_name",
+      AttributeName: "email",
       AttributeType: "S",
     },
   ],
   KeySchema: [
     {
-      AttributeName: "email", // hash key
+      AttributeName: "user_id", // hash key
       KeyType: "HASH",
     },
     {
-      AttributeName: "user_name", // sort key
+      AttributeName: "email", // sort key
       KeyType: "RANGE",
     },
   ],
@@ -38,6 +38,24 @@ export const loginTableParams: CreateTableCommandInput = {
     ReadCapacityUnits: 10,
     WriteCapacityUnits: 10,
   },
+  GlobalSecondaryIndexes: [
+    {
+      IndexName: "email_index",
+      KeySchema: [
+        {
+          AttributeName: "email",
+          KeyType: "HASH",
+        },
+      ],
+      Projection: {
+        ProjectionType: "ALL",
+      },
+      ProvisionedThroughput: {
+        ReadCapacityUnits: 10,
+        WriteCapacityUnits: 10,
+      },
+    },
+  ],
   TableName: "login",
 };
 
@@ -72,21 +90,21 @@ export const musicTableParams: CreateTableCommandInput = {
 export const subTableParams: CreateTableCommandInput = {
   AttributeDefinitions: [
     {
-      AttributeName: "email",
+      AttributeName: "sub_id",
       AttributeType: "S",
     },
     {
-      AttributeName: "music_id",
+      AttributeName: "user_id",
       AttributeType: "S",
     },
   ],
   KeySchema: [
     {
-      AttributeName: "email", // hash key
+      AttributeName: "sub_id", // hash key
       KeyType: "HASH",
     },
     {
-      AttributeName: "music_id", // sort key
+      AttributeName: "user_id", // sort key
       KeyType: "RANGE",
     },
   ],
@@ -95,6 +113,24 @@ export const subTableParams: CreateTableCommandInput = {
     WriteCapacityUnits: 10,
   },
   TableName: "subscriptions",
+  GlobalSecondaryIndexes: [
+    {
+      IndexName: "user_id_index",
+      KeySchema: [
+        {
+          AttributeName: "user_id",
+          KeyType: "HASH",
+        },
+      ],
+      Projection: {
+        ProjectionType: "ALL",
+      },
+      ProvisionedThroughput: {
+        ReadCapacityUnits: 10,
+        WriteCapacityUnits: 10,
+      },
+    },
+  ],
 };
 
 const createTable = async (params: CreateTableCommandInput) => {
@@ -137,6 +173,7 @@ const addUsers = async () => {
   for (let i = 0; i < 10; i++) {
     insertPromises.push(
       insertItem("login", {
+        user_id: { S: `user${i}` },
         email: { S: `s3272974${i}@student.rmit.edu.au` },
         user_name: { S: `Stephanie Ridnell${i}` },
         password: { S: generateUserPassword(i) },
