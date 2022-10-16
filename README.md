@@ -8,7 +8,6 @@ cloudcomputingassignment.stephridnell.com
 
 ## if you i stop and start the ec2 instance, it will have a new DNS name so this will fail so need to update the cname record in route54
 
-1. go to https://ap-southeast-2.console.aws.amazon.com/ec2/home?region=ap-southeast-2#Inst4ances
 1. go to https://ap-southeast-2.console.aws.amazon.com/ec2/home?region=ap-southeast-2#Instances
 1. get the Public IPv4 DNS value of the ec2 instance
 1. go to https://us-east-1.console.aws.amazon.com/route53/v2/hostedzones#ListRecordSets/Z1WQV6XJWIIZ88
