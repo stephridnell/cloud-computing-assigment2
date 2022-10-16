@@ -11,7 +11,7 @@
         secondary
         type="warning"
         @click="unsubscribe"
-        v-if="isSubscribedTo"
+        v-if="!!subscriptionId"
       >
         Unsubscribe
       </n-button>
@@ -25,7 +25,7 @@
 <script lang="ts">
 import { defineComponent, PropType } from 'vue'
 import { NCard, NButton } from 'naive-ui'
-import { Song } from '../types'
+import { Song, User } from '../types'
 import http from '../http'
 
 export default defineComponent({
@@ -42,16 +42,12 @@ export default defineComponent({
     NCard
   },
   computed: {
-    subscriptionId () {
+    subscriptionId (): string {
       return this.$store.getters.subscriptionId(this.song.music_id)
     },
 
-    currentUser () {
+    currentUser (): User {
       return this.$store.getters.currentUser
-    },
-
-    isSubscribedTo () {
-      return !!this.subscriptionId
     }
   },
   methods: {
