@@ -1,6 +1,6 @@
 <template>
   <div>
-    <n-space vertical v-show="!loading">
+    <n-space vertical>
       <n-form ref="formRef" inline :label-width="80" :model="query">
         <n-form-item label="Title" path="title">
           <n-input v-model:value="query.title" />
@@ -12,7 +12,7 @@
           <n-input v-model:value="query.artist" />
         </n-form-item>
         <n-form-item>
-          <n-button type="primary" @click="handleQuery"> Query </n-button>
+          <n-button :loading="loading" type="primary" @click="handleQuery"> Query </n-button>
         </n-form-item>
       </n-form>
       <div v-if="filteredMusic.length === 0">
@@ -88,6 +88,7 @@ export default defineComponent({
         const artist = queryRef.value.artist.trim().toLowerCase()
 
         filteredMusicRef.value = musicRef.value.filter((el) => {
+          loadingRef.value = true
           let include = true
           if (title) {
             include = include && el.title.toLowerCase().includes(title)
@@ -98,6 +99,7 @@ export default defineComponent({
           if (artist) {
             include = include && el.artist.toLowerCase().includes(artist)
           }
+          loadingRef.value = false
           return include
         })
       }
@@ -107,6 +109,7 @@ export default defineComponent({
     loadingRef.value = true
     const data = (await http.get('/music')) as MusicResponse
     musicRef.value = data.music
+    filteredMusicRef.value = data.music
     loadingRef.value = false
   }
 })

@@ -23,11 +23,10 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, PropType } from 'vue'
+import { defineComponent, PropType } from 'vue'
 import { NCard, NButton } from 'naive-ui'
 import { Song } from '../types'
 import http from '../http'
-import { useStore } from 'vuex'
 
 export default defineComponent({
   name: 'SongCard',
@@ -42,27 +41,31 @@ export default defineComponent({
     NButton,
     NCard
   },
-  setup: (props, { emit }) => {
-    const store = useStore()
-    const currentUser = computed(() => store.getters.currentUser)
-    const subscriptionId = computed(() =>
-      store.getters.subscriptionId(props.song.music_id)
-    )
+  computed: {
+    subscriptionId () {
+      return this.$store.getters.subscriptionId(this.song.music_id)
+    },
 
-    return {
-      subscribe: async () => {
-        await http.post(
-          `/${currentUser.value.user_id}/${props.song.music_id}/subscribe`
-        )
-        emit('subChanged')
-      },
-      unsubscribe: async () => {
-        await http.post(
-          `/${currentUser.value.user_id}/${subscriptionId.value}/unsubscribe`
-        )
-        emit('subChanged')
-      },
-      isSubscribedTo: !!subscriptionId.value
+    currentUser () {
+      return this.$store.getters.currentUser
+    },
+
+    isSubscribedTo () {
+      return !!this.subscriptionId
+    }
+  },
+  methods: {
+    async subscribe () {
+      await http.post(
+        `/${this.currentUser.user_id}/${this.song.music_id}/subscribe`
+      )
+      this.$emit('subChanged')
+    },
+    async unsubscribe () {
+      await http.post(
+        `/${this.currentUser.user_id}/${this.subscriptionId}/unsubscribe`
+      )
+      this.$emit('subChanged')
     }
   }
 })
