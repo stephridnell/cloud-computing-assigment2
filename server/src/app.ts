@@ -59,7 +59,6 @@ app.post("/register", async (req: Request, res: Response) => {
   if (userByEmail) {
     return res.status(400).json({ msg: "The email already exists" });
   }
-  // all good, store new user in firestore
   try {
     await insertItem("login", {
       user_id: { S: uuidv4() },
